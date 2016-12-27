@@ -45,13 +45,14 @@ public class JobDaoTests {
         List<Tasks> tasks = testUtils.readJsonFixture("fixtures/test_creating_and_fetching_a_job_input_tasks.json",
                 new TypeReference<List<Tasks>>() {
                 });
+        Assert.assertNull(job.getId());
         jobDao.createJob(job, tasks);
+        Assert.assertNotNull(job.getId());
         UUID jobId = job.getId();
         Jobs fetchedJob = jobDao.getJobById(jobId);
         Assert.assertNotSame(job, fetchedJob);
         testUtils.assertJsonEquals("fixtures/test_creating_and_fetching_a_job_input_job.json", fetchedJob);
         Assert.assertEquals(job.getId(), fetchedJob.getId());
-
 
     }
 }
