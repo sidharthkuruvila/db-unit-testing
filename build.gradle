@@ -1,0 +1,110 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE")
+        classpath group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc41'
+    }
+}
+plugins {
+    id 'java'
+    id 'org.liquibase.gradle' version '1.2.1'
+    id 'nu.studer.jooq' version '2.0.2'
+    //id 'io.franzbecker.gradle-lombok' version '1.8'
+}
+apply plugin: 'org.springframework.boot'
+
+group = 'db_unit_testing'
+version = '0.0.1'
+
+
+description = """Example using db unit for testing jooq based repositories"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    compile group: 'org.jooq', name: 'jooq'
+    compile group: 'org.jooq', name: 'jooq-meta'
+    
+    testCompile group: 'org.dbunit', name: 'dbunit', version: '2.4.9'
+
+    compile group: 'com.zaxxer', name: 'HikariCP', version: '2.4.6'
+    compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc41'
+
+    compileOnly 'org.projectlombok:lombok:1.16.10'
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+//    testCompile("com.h2database:h2")
+
+    testCompile('com.github.springtestdbunit:spring-test-dbunit:1.2.0')
+
+    jooqRuntime group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc41'
+
+    testCompile 'commons-logging:commons-logging:1.1.1'
+
+    testCompile group: 'org.springframework', name: 'spring-jdbc'
+
+    compile 'org.jooq:jool:0.9.12'
+
+    testCompile 'org.skyscreamer:jsonassert:1.4.0'
+}
+
+
+jooq {
+    version = '3.8.4'
+    edition = 'OSS'
+}
+
+liquibase {
+    activities {
+        migrations {
+            changeLogFile 'gradle/migrations.xml'
+            url 'jdbc:postgresql://localhost:5432/test_migration'
+        }
+    }
+}
+
+jooq {
+    version = '3.8.4'
+    edition = 'OSS'
+    sample(sourceSets.main) {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            url = 'jdbc:postgresql://localhost:5432/test_migration'
+            user = 'postgres'
+            password = ''
+            schema = 'public'
+        }
+        generator {
+            name = 'org.jooq.util.DefaultGenerator'
+            strategy {
+                name = 'org.jooq.util.DefaultGeneratorStrategy'
+            }
+            database {
+                name = 'org.jooq.util.postgres.PostgresDatabase'
+                inputSchema = 'public'
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                pojos = true
+                fluentSetters = true
+                // ...
+            }
+            target {
+                packageName = 'dbunittesting.generated'
+                // directory = ...
+            }
+        }
+    }
+}
