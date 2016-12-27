@@ -1,20 +1,25 @@
 package dbunittesting;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import dbunittesting.dao.UserDao;
 import dbunittesting.dao.UserDaoImpl;
 import dbunittesting.daofactory.DBProducer;
 import dbunittesting.daofactory.resources.DBFactory;
 import dbunittesting.generated.tables.pojos.Users;
-import dbunittesting.util.TestConfig;
+import dbunittesting.config.TestConfig;
+import dbunittesting.utils.TestUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -36,9 +41,14 @@ import static dbunittesting.daofactory.DBType.POSTGRES;
 //@DatabaseSetup("/dbunittesting/dao/user_tests.xml")
 public class UserDaoTests {
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    TestUtils testUtils;
 
     @Test
-    public void testSomething() {
+    public void testSomething() throws JsonProcessingException, JSONException {
         UserDao ud = new UserDaoImpl();
         Users u = new Users();
         u.setFirstName("First");
@@ -48,8 +58,10 @@ public class UserDaoTests {
 
         Users fu = ud.getUserByUsername("user");
         Assert.assertEquals("First", fu.getFirstName());
-    }
 
+        testUtils.assertJsonEquals("fixtures/get_user_by_name_expected.json", fu);
+
+    }
     @After
     public void cleanup() throws Exception {
         deleteTable(dbunittesting.generated.tables.Users.USERS);

@@ -1,8 +1,10 @@
-package dbunittesting.util;
+package dbunittesting.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dbunittesting.daofactory.DBProducer;
 import dbunittesting.daofactory.DBType;
 import dbunittesting.daofactory.resources.PGFactory;
+import dbunittesting.utils.TestUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,5 +19,15 @@ public class TestConfig {
     @Bean
     public DataSource dataSource() {
         return PGFactory.dataSource;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public TestUtils testUtils(ObjectMapper objectMapper) {
+        return new TestUtils(objectMapper);
     }
 }

@@ -29,9 +29,6 @@ public class UserDaoImpl implements UserDao{
             ur.setLastName(user.getLastName());
             ur.setUsername(user.getUsername());
             ur.setPassword(user.getPassword());
-            ur.setGender(user.getGender());
-            ur.setAvatarUrl(user.getAvatarUrl());
-            ur.setLocale(user.getLocale());
 
             ur.setCreatedAt(now);
             ur.setUpdatedAt(now);
@@ -85,17 +82,6 @@ public class UserDaoImpl implements UserDao{
         user.setFirstName(rec.getValue(USERS.FIRST_NAME));
         user.setLastName(rec.getValue(USERS.LAST_NAME));
         user.setPassword(rec.getValue(USERS.PASSWORD));
-        user.setGender(rec.getValue(USERS.GENDER));
-        user.setLocale(rec.getValue(USERS.LOCALE));
-        user.setAvatarUrl(rec.getValue(USERS.AVATAR_URL));
-        user.setIncorrectQuestionsCount(rec.getValue(USERS.INCORRECT_QUESTIONS_COUNT));
-        user.setCorrectQuestionsCount(rec.getValue(USERS.CORRECT_QUESTIONS_COUNT));
-        user.setPendingQuestionsCount(rec.getValue(USERS.PENDING_QUESTIONS_COUNT));
-        user.setCoinsCount(rec.getValue(USERS.COINS_COUNT));
-        user.setTotalCoinsCount(rec.getValue(USERS.TOTAL_COINS_COUNT));
-        user.setCurrentPower(rec.getValue(USERS.CURRENT_POWER));
-        user.setCouponRedeemedCount(rec.getValue(USERS.COUPON_REDEEMED_COUNT));
-        user.setPhone(rec.getValue(USERS.PHONE));
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
 
