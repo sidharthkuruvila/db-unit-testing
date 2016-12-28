@@ -59,6 +59,9 @@ dependencies {
 
     testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.5'
     compile group: 'com.google.guava', name: 'guava', version: '20.0'
+
+    compile group: 'com.beust', name: 'jcommander', version: '1.58'
+
 }
 
 

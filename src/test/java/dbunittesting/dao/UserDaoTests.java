@@ -3,16 +3,8 @@ package dbunittesting.dao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dbunittesting.config.TestConfig;
-import dbunittesting.dao.UserDao;
-import dbunittesting.dao.UserDaoImpl;
-import dbunittesting.daofactory.DBProducer;
-import dbunittesting.daofactory.resources.DBFactory;
 import dbunittesting.generated.tables.pojos.Users;
 import dbunittesting.utils.TestUtils;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
@@ -21,10 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.sql.Connection;
-
-import static dbunittesting.daofactory.DBType.POSTGRES;
 
 @RunWith(SpringRunner.class)
 //@ActiveProfiles("local")
