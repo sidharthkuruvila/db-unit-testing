@@ -24,9 +24,8 @@ public class JobDaoImpl implements JobDao {
     public void createJob(Jobs job, List<Tasks> tasks) {
         try {
             try (Connection connection = dbFactory.getConnection()) {
-                DSLContext DB = DSL.using(connection, SQLDialect.POSTGRES_9_4);
-                connection.setAutoCommit(false);
-                try {
+                doTransaction(connection, () -> {
+                    DSLContext DB = DSL.using(connection, SQLDialect.POSTGRES_9_4);
                     UUID jobId = UUID.randomUUID();
                     JobsRecord jobsRecord = DB.newRecord(JOBS);
                     jobsRecord.setId(jobId);
@@ -44,9 +43,7 @@ public class JobDaoImpl implements JobDao {
                     }).collect(Collectors.toList());
                     DB.executeInsert(jobsRecord);
                     DB.batchInsert(tasksRecords).execute();
-                } finally {
-                    connection.setAutoCommit(true);
-                }
+                });
             }
         } catch (SQLException e) {
             throw new IllegalStateException(e);
@@ -55,7 +52,7 @@ public class JobDaoImpl implements JobDao {
         }
     }
 
-    public Jobs getJobById(UUID id){
+    public Jobs getJobById(UUID id) {
         try (Connection connection = dbFactory.getConnection()) {
             DSLContext create = DSL.using(connection, SQLDialect.POSTGRES_9_4);
             Jobs jobs = create.select().from(JOBS)
@@ -64,6 +61,35 @@ public class JobDaoImpl implements JobDao {
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private interface TransactionalCode {
+        void exec() throws Exception;
+    }
+
+    private void doTransaction(Connection connection, TransactionalCode code) {
+        try {
+            boolean startedTransaction = false;
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+                startedTransaction = true;
+            }
+            try {
+                try {
+                    code.exec();
+                } catch (Exception e) {
+                    connection.rollback();
+                    throw new IllegalStateException(e);
+                }
+            } finally {
+                if (startedTransaction) {
+                    connection.commit();
+                    connection.setAutoCommit(true);
+                }
+            }
+        } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
     }

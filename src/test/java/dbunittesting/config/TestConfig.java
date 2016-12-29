@@ -7,6 +7,7 @@ import dbunittesting.daofactory.resources.PGFactory;
 import dbunittesting.utils.TestUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -29,5 +30,10 @@ public class TestConfig {
     @Bean
     public TestUtils testUtils(ObjectMapper objectMapper) {
         return new TestUtils(objectMapper);
+    }
+
+    @Bean
+    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 }

@@ -4,6 +4,7 @@ package dbunittesting.daofactory.resources;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dbunittesting.Config;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -55,7 +56,7 @@ public class PGFactory extends DBFactory {
             // test query
             config.setConnectionTestQuery("SELECT 1");
 
-            dataSource = new HikariDataSource(config);
+            dataSource = new TransactionAwareDataSourceProxy(new HikariDataSource(config));
 
         }
     }

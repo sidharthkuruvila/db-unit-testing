@@ -62,6 +62,7 @@ dependencies {
 
     compile group: 'com.beust', name: 'jcommander', version: '1.58'
 
+    compile group: 'org.springframework', name: 'spring-jdbc'
 }
 
 
