@@ -50,5 +50,6 @@ public class UserDaoTests {
         Assert.assertEquals("First", fu.getFirstName());
 
         testUtils.assertJsonEquals("fixtures/get_user_by_name_expected.json", fu);
+        System.out.println("Finished testing user dao");
     }
 }

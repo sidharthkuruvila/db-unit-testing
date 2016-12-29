@@ -63,6 +63,10 @@ dependencies {
     compile group: 'com.beust', name: 'jcommander', version: '1.58'
 
     compile group: 'org.springframework', name: 'spring-jdbc'
+
+    testCompile group: 'com.opentable.components', name: 'otj-pg-embedded', version: '0.7.1'
+
+    testCompile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'
 }
 
 

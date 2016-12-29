@@ -47,6 +47,7 @@ public class JobDaoTests {
         Assert.assertNotSame(job, fetchedJob);
         testUtils.assertJsonEquals("fixtures/test_creating_and_fetching_a_job_input_job.json", fetchedJob);
         Assert.assertEquals(job.getId(), fetchedJob.getId());
+        System.out.println("Finished testing jobs dao");
 
     }
 }
