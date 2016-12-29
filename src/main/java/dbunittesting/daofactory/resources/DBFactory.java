@@ -1,5 +1,8 @@
 package dbunittesting.daofactory.resources;
 
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import java.sql.Connection;
 
 public abstract class DBFactory {
@@ -9,6 +12,8 @@ public abstract class DBFactory {
      * DSLContext create = DSL.using(connection, SQLDialect.POSTGRES_9_4);
      */
     public abstract Connection getConnection() throws Exception;
+
+    public abstract TransactionTemplate getTransactionTemplate();
 
     //public abstract Jedis getJedi();
 

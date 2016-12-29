@@ -7,6 +7,7 @@ import dbunittesting.generated.tables.records.TasksRecord;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,8 +24,10 @@ public class JobDaoImpl implements JobDao {
     @Override
     public void createJob(Jobs job, List<Tasks> tasks) {
         try {
+            TransactionTemplate transactionTemplate = dbFactory.getTransactionTemplate();
             try (Connection connection = dbFactory.getConnection()) {
-                doTransaction(connection, () -> {
+                transactionTemplate.execute((status) -> {
+
                     DSLContext DB = DSL.using(connection, SQLDialect.POSTGRES_9_4);
                     UUID jobId = UUID.randomUUID();
                     JobsRecord jobsRecord = DB.newRecord(JOBS);
@@ -43,8 +46,11 @@ public class JobDaoImpl implements JobDao {
                     }).collect(Collectors.toList());
                     DB.executeInsert(jobsRecord);
                     DB.batchInsert(tasksRecords).execute();
+
+                    return null;
                 });
             }
+
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         } catch (Exception e) {
@@ -61,35 +67,6 @@ public class JobDaoImpl implements JobDao {
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private interface TransactionalCode {
-        void exec() throws Exception;
-    }
-
-    private void doTransaction(Connection connection, TransactionalCode code) {
-        try {
-            boolean startedTransaction = false;
-            if (connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-                startedTransaction = true;
-            }
-            try {
-                try {
-                    code.exec();
-                } catch (Exception e) {
-                    connection.rollback();
-                    throw new IllegalStateException(e);
-                }
-            } finally {
-                if (startedTransaction) {
-                    connection.commit();
-                    connection.setAutoCommit(true);
-                }
-            }
-        } catch (SQLException e) {
             throw new IllegalStateException(e);
         }
     }

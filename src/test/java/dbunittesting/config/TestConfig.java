@@ -34,6 +34,6 @@ public class TestConfig {
 
     @Bean
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+        return PGFactory.dataSourceTransactionManager;
     }
 }

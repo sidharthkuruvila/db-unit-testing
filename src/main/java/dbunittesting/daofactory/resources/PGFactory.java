@@ -4,7 +4,9 @@ package dbunittesting.daofactory.resources;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dbunittesting.Config;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,6 +16,9 @@ public class PGFactory extends DBFactory {
 
 
     public static DataSource dataSource;
+    public static DataSourceTransactionManager dataSourceTransactionManager;
+    private static TransactionTemplate transactionTemplate;
+
 
     /**
      * It provides connection to PostgreSQL Database It must only be called from {@link DBProducer}
@@ -30,6 +35,11 @@ public class PGFactory extends DBFactory {
         } catch (SQLException e){
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public TransactionTemplate getTransactionTemplate() {
+        return transactionTemplate;
     }
 
     @Override
@@ -57,6 +67,8 @@ public class PGFactory extends DBFactory {
             config.setConnectionTestQuery("SELECT 1");
 
             dataSource = new TransactionAwareDataSourceProxy(new HikariDataSource(config));
+            dataSourceTransactionManager = new DataSourceTransactionManager(dataSource);
+            transactionTemplate = new TransactionTemplate(dataSourceTransactionManager);
 
         }
     }
