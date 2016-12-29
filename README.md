@@ -22,4 +22,3 @@ Building and running the tests
 ### Run the unit tests
 
     gradle test
-    

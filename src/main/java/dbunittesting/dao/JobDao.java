@@ -4,7 +4,6 @@ import dbunittesting.daofactory.DBProducer;
 import dbunittesting.daofactory.resources.DBFactory;
 import dbunittesting.generated.tables.pojos.Jobs;
 import dbunittesting.generated.tables.pojos.Tasks;
-import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;

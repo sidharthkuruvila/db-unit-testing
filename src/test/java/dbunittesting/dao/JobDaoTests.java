@@ -2,7 +2,6 @@ package dbunittesting.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import dbunittesting.config.TestConfig;
 import dbunittesting.generated.tables.pojos.Jobs;
 import dbunittesting.generated.tables.pojos.Tasks;

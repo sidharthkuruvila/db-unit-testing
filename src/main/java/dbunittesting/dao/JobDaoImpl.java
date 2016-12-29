@@ -5,8 +5,6 @@ import dbunittesting.generated.tables.pojos.Tasks;
 import dbunittesting.generated.tables.records.JobsRecord;
 import dbunittesting.generated.tables.records.TasksRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
@@ -17,7 +15,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static dbunittesting.generated.tables.Jobs.JOBS;
-import static dbunittesting.generated.tables.Users.USERS;
 
 /**
  * Created by sidharth on 27/12/16.

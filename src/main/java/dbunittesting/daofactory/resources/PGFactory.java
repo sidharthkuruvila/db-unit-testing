@@ -1,17 +1,13 @@
 package dbunittesting.daofactory.resources;
 
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
-import javax.sql.DataSource;
-
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dbunittesting.Config;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class PGFactory extends DBFactory {
 

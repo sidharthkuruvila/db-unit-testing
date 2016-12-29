@@ -3,9 +3,6 @@ package dbunittesting.dao;
 import dbunittesting.daofactory.DBProducer;
 import dbunittesting.daofactory.resources.DBFactory;
 import dbunittesting.generated.tables.pojos.Users;
-import lombok.Data;
-
-import java.util.List;
 
 import static dbunittesting.daofactory.DBType.POSTGRES;
 
@@ -19,10 +16,4 @@ public interface UserDao {
 
     Users getUserByUsername(String username);
 
-    @Data
-    public static class User {
-        Users user;
-        List<String> emails;
-        List<String> roles;
-    }
 }
