@@ -66,14 +66,14 @@ public class PGFactory extends DBFactory {
             // test query
             config.setConnectionTestQuery("SELECT 1");
 
-            DataSource ds = new TransactionAwareDataSourceProxy(new HikariDataSource(config));
+            DataSource ds = new HikariDataSource(config);
             initializeUsingDataSource(ds);
 
         }
     }
 
     public static void initializeUsingDataSource(DataSource ds) {
-        dataSource = ds;
+        dataSource =  new TransactionAwareDataSourceProxy(ds);
         dataSourceTransactionManager = new DataSourceTransactionManager(dataSource);
         transactionTemplate = new TransactionTemplate(dataSourceTransactionManager);
     }

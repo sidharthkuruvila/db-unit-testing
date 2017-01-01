@@ -1,6 +1,8 @@
 package dbunittesting.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.springtestdbunit.bean.DatabaseConfigBean;
+import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import dbunittesting.daofactory.resources.PGFactory;
 import dbunittesting.utils.TestUtils;
@@ -9,14 +11,20 @@ import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseDataSourceConnection;
+import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 @Configuration
 public class TestConfig {
@@ -38,8 +46,8 @@ public class TestConfig {
     }
 
     @Bean
-    public TestUtils testUtils(ObjectMapper objectMapper) {
-        return new TestUtils(objectMapper);
+    public TestUtils testUtils(ObjectMapper objectMapper, DataSource dataSource) throws DatabaseUnitException, SQLException, IOException {
+        return new TestUtils(objectMapper, dbUnitDatabaseConnection(dataSource));
     }
 
     @Bean
@@ -57,6 +65,22 @@ public class TestConfig {
         }
     }
 
+    @Bean
+    public DatabaseConfigBean databaseConfigBean() {
+        DatabaseConfigBean databaseConfigBean = new DatabaseConfigBean();
+        databaseConfigBean.setDatatypeFactory(new PostgresqlDataTypeFactory());
+        return databaseConfigBean;
+    }
+
+    @Bean(name = "dbUnitDatabaseConnection")
+    public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection(DataSource dataSource) throws SQLException, DatabaseUnitException, IOException {
+        DatabaseDataSourceConnectionFactoryBean databaseDataSourceConnectionFactoryBean = new DatabaseDataSourceConnectionFactoryBean();
+        databaseDataSourceConnectionFactoryBean.setDatabaseConfig(databaseConfigBean());
+        databaseDataSourceConnectionFactoryBean.setDataSource(dataSource);
+        databaseDataSourceConnectionFactoryBean.setSchema("public");
+        return databaseDataSourceConnectionFactoryBean;
+    }
+
     private void setupEmbeddedPostgres() {
         try {
             epg = EmbeddedPostgres.start();
@@ -64,7 +88,7 @@ public class TestConfig {
             ResourceAccessor ra = new FileSystemResourceAccessor();
             try (Connection con = ds.getConnection()) {
                 Liquibase liquibase = new Liquibase("gradle/migrations.xml", ra, new JdbcConnection(con));
-                liquibase.update((Contexts)null);
+                liquibase.update((Contexts) null);
             }
             PGFactory.initializeUsingDataSource(ds);
         } catch (Exception e) {

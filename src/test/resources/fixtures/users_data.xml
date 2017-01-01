@@ -1,0 +1,8 @@
+<dataset>
+    <users id="12e353ad-0bf1-4630-a205-c8dd27c23fb1" username="alice" first_name="Alice" last_name="Smith"
+           password="testing123" created_at="2017-01-01 6:46:57" updated_at="2017-01-01 6:46:57"/>
+
+    <!--<users id="12e353ad-0bf1-4630-a205-c8dd27c23fb1" username="alice" first_name="Alice" last_name="Smith" password="" created_at="" updated_at="" />-->
+    <!--users id="1" username="bob" first_name="Bob" last_name="Smith" password="" created_at="" updated_at="" />
+    <users id="1" username="carol" first_name="Bob" last_name="Smith" password="" created_at="" updated_at="" /-->
+</dataset>

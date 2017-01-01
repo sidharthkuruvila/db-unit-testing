@@ -2,10 +2,14 @@ package dbunittesting.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import dbunittesting.daofactory.DBProducer;
 import dbunittesting.daofactory.resources.DBFactory;
+import org.dbunit.database.DatabaseDataSourceConnection;
+import org.dbunit.database.QueryDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.Table;
@@ -14,8 +18,11 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.List;
 
 import static dbunittesting.daofactory.DBType.POSTGRES;
 
@@ -23,11 +30,13 @@ import static dbunittesting.daofactory.DBType.POSTGRES;
 public class TestUtils {
 
     private ObjectMapper objectMapper;
+    private DatabaseDataSourceConnectionFactoryBean databaseDataSourceConnectionFactoryBean;
 
     @Autowired
-    public TestUtils(ObjectMapper objectMapper) {
+    public TestUtils(ObjectMapper objectMapper, DatabaseDataSourceConnectionFactoryBean databaseDataSourceConnectionFactoryBean) {
 
         this.objectMapper = objectMapper;
+        this.databaseDataSourceConnectionFactoryBean = databaseDataSourceConnectionFactoryBean;
     }
 
     public String fixture(String path) {
@@ -64,5 +73,21 @@ public class TestUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void generateExpectedDbUtilsFile(String outfile, List<String> tables) throws Exception {
+        DatabaseDataSourceConnection dddsc = databaseDataSourceConnectionFactoryBean.getObject();
+        try {
+            QueryDataSet partialDataSet = new QueryDataSet(dddsc);
+            for(String table: tables){
+                partialDataSet.addTable(table, String.format("SELECT * FROM %s", table));
+            }
+            FlatXmlDataSet.write(partialDataSet, new FileOutputStream(outfile));
+
+        }finally {
+            dddsc.close();
+        }
+
+
     }
 }

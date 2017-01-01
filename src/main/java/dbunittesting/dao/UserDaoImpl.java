@@ -11,6 +11,7 @@ import org.jooq.impl.DSL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Clock;
 import java.util.UUID;
 
 import static dbunittesting.generated.tables.Users.USERS;
@@ -39,8 +40,8 @@ public class UserDaoImpl implements UserDao{
                 return null;
             }
             user.setId(ur.getId());
-            user.setCreatedAt(now);
-            user.setUpdatedAt(now);
+            user.setCreatedAt(ur.getCreatedAt());
+            user.setUpdatedAt(ur.getUpdatedAt());
 
             return user;
         } catch (SQLException e) {
@@ -74,7 +75,6 @@ public class UserDaoImpl implements UserDao{
     }
 
     private Users setUserDetails(Result<Record> records) {
-        Timestamp now = new Timestamp(System.currentTimeMillis());
         Record rec = records.get(0);
         Users user = new Users();
         user.setId(rec.getValue(USERS.ID));
@@ -82,8 +82,8 @@ public class UserDaoImpl implements UserDao{
         user.setFirstName(rec.getValue(USERS.FIRST_NAME));
         user.setLastName(rec.getValue(USERS.LAST_NAME));
         user.setPassword(rec.getValue(USERS.PASSWORD));
-        user.setCreatedAt(now);
-        user.setUpdatedAt(now);
+        user.setCreatedAt(rec.getValue(USERS.CREATED_AT));
+        user.setUpdatedAt(rec.getValue(USERS.UPDATED_AT));
 
         return user;
     }
